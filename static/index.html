@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        
+        <title>Auto Subtitles Downloader</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        <style>
+        #fileinput{
+          display:none;
+        }
+        #filedropzone{
+          min-height: 200px; 
+          white-space: pre; 
+          border: 1px solid black; 
+          text-align:center; 
+          padding:10px;
+          position:relative;
+        }
+        #filedropzone[data-dragging=true]:after{
+          position:absolute;
+          top:0px;
+          left:0px;
+          width:100%;
+          height:100%;
+          content:'Drop Here';
+          text-align:center;
+          line-height:200px;
+          box-sizing: border-box;
+          background-color: steelblue;
+          font-size:50px;
+          color:#fff;
+          background-color: rgba(0,0,80, 0.5);
+        }
+        #files-display{
+          list-style: none;
+          padding:0px;
+        }
+        #files-display li{
+          display:block;
+          border: 1px dashed gray;
+          padding:5px;
+          margin-top:5px;
+        }
+        #files-display li.waiting{
+          border-color:darkorange;
+        }
+        #files-display li.waiting:before{
+          content: 'Processing...';
+          float:right;
+        }
+        #files-display li.completed{
+          border-color:green;
+        }
+        #files-display li.completed:before{
+          content: 'Done!';
+          float:right;
+        }
+        </style>
+    </head>
+    <body>
+    <script>
+    function dodrop(event)
+{
+  var dt = event.dataTransfer;
+  var files = dt.files;
+
+  var count = files.length;
+  output("File Count: " + count + "\n");
+
+    for (var i = 0; i < files.length; i++) {
+      output(" File " + i + ":\n(" + (typeof files[i]) + ") : <" + files[i] + " > " +
+             files[i].name + " " + files[i].size + "\n");
+    }
+}
+
+function output(text)
+{
+  document.getElementById("dropzone").textContent += text;
+  //dump(text);
+}
+
+function browse(){
+  document.getElementById("fileinput").click();
+}
+
+    </script>
+<article style="background:#fff; margin:50px 10%;">
+  <h1 style="text-align:center; font-size:42px;">Auto Subtitles Downloader</h1>
+  <h3 style="text-align:center; color:#aaa;">Online Subtitle Searcher, Without uploading!</h3> 
+  <br/>
+  <p style="text-align:center;">
+  <label for="SubLanguageID">Subtitles Language </label>&nbsp;&nbsp;<select name="SubLanguageID" id="SubLanguageID"><option value="eng">English</option><option value="afr">Afrikaans</option><option value="alb">Albanian</option><option value="ara">Arabic</option><option value="arm">Armenian</option><option value="ast">Asturian</option><option value="aze">Azerbaijani</option><option value="baq">Basque</option><option value="bel">Belarusian</option><option value="ben">Bengali</option><option value="bos">Bosnian</option><option value="bre">Breton</option><option value="bul">Bulgarian</option><option value="bur">Burmese</option><option value="cat">Catalan</option><option value="chi">Chinese (simplified)</option><option value="zht">Chinese (traditional)</option><option value="zhe">Chinese bilingual</option><option value="hrv">Croatian</option><option value="cze">Czech</option><option value="dan">Danish</option><option value="dut">Dutch</option><option value="epo">Esperanto</option><option value="est">Estonian</option><option value="ext">Extremaduran</option><option value="fin">Finnish</option><option value="fre">French</option><option value="glg">Galician</option><option value="geo">Georgian</option><option value="ger">German</option><option value="ell">Greek</option><option value="heb">Hebrew</option><option value="hin">Hindi</option><option value="hun">Hungarian</option><option value="ice">Icelandic</option><option value="ind">Indonesian</option><option value="ita">Italian</option><option value="jpn">Japanese</option><option value="kaz">Kazakh</option><option value="khm">Khmer</option><option value="kor">Korean</option><option value="lav">Latvian</option><option value="lit">Lithuanian</option><option value="ltz">Luxembourgish</option><option value="mac">Macedonian</option><option value="may">Malay</option><option value="mal">Malayalam</option><option value="mni">Manipuri</option><option value="mon">Mongolian</option><option value="mne">Montenegrin</option><option value="nor">Norwegian</option><option value="oci">Occitan</option><option value="per">Persian</option><option value="pol">Polish</option><option value="por">Portuguese</option><option value="pob">Portuguese (BR)</option><option value="pom">Portuguese (MZ)</option><option value="rum">Romanian</option><option value="rus">Russian</option><option value="scc">Serbian</option><option value="sin">Sinhalese</option><option value="slo">Slovak</option><option value="slv">Slovenian</option><option value="spa">Spanish</option><option value="swa">Swahili</option><option value="swe">Swedish</option><option value="syr">Syriac</option><option value="tgl">Tagalog</option><option value="tam">Tamil</option><option value="tel">Telugu</option><option value="tha">Thai</option><option value="tur">Turkish</option><option value="ukr">Ukrainian</option><option value="urd">Urdu</option><option value="vie">Vietnamese</option></select>
+  </p>
+    <ul id="files-display">
+  </ul>
+  <p>
+  <button type="button" onclick="download();" class="btn btn-lg btn-primary" id="btnDownload" disabled="disabled">Download Subtitles</button>
+  </p>
+  <div id="filedropzone" data-dragging=false
+       ondragenter="event.stopPropagation(); event.preventDefault(); this.setAttribute('data-dragging', 'true');"
+       ondragover="event.stopPropagation(); event.preventDefault();"
+       ondrop="event.stopPropagation(); event.preventDefault(); this.setAttribute('data-dragging', 'false'); processFiles(event.dataTransfer.files); ">
+       Drop files here, or<br/>
+       <button type="button" onclick="browse();" class="btn btn-lg btn-primary">Choose files</button>
+  </div>
+</article>
+
+        <input type="file" id="fileinput" multiple="multiple" />
+        <script type="text/javascript" src="js/mimic.js"></script>
+        <script type="text/javascript" src="js/jszip.js"></script>
+        <script type="text/javascript" src="js/pako.js"></script>
+        <!-- <script type="text/javascript" src="js/hash.js"></script> -->
+        <script type="text/javascript" src="js/opensubtitles.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+    </body>
+</html>
