@@ -1,30 +1,33 @@
 var subber = new OpenSubtitles();
 var zip = new JSZip();
 zip.file("Downloaded using autosub.txt", "Downloaded from autosub - automatic subtitles searcher");
+var files = [];
+var filesElements = [];
+var filesContainer = document.getElementById('files-display');
+var processingFileIndex=0;
 
-function processFiles(files){
-  var divs = [];
-  var container =     document.getElementById('files-display');
-  for(var i=0; i<files.length; i++){
-    var filediv = document.createElement("li");
-    filediv.className = "waiting";
-    filediv.textContent = files[i].name;
-    container.appendChild(filediv);
-    divs.push(filediv);
+function processFiles(mfiles){  
+  for(var i=0; i<mfiles.length; i++){
+    files.push(mfiles[i]);
+    var el = document.createElement("li");
+    el.className = "waiting";
+    el.textContent = mfiles[i].name;
+    filesContainer.appendChild(el);
+    filesElements.push(el);
   }
-  var fileIndex=0;
-  function next(){
-    if(fileIndex == files.length)
-      document.getElementById('btnDownload').removeAttribute('disabled');
-    else
-      processFile(files[fileIndex], function(){
-        divs[fileIndex].className = "completed";
-        fileIndex++;
-        next();
-      })
-  }
-  
-  next();
+  document.getElementById('btnDownload').setAttribute('disabled', 'disabled');
+  setTimeout(processNext, 500);
+}
+
+function processNext(){
+  if(processingFileIndex == files.length)
+    document.getElementById('btnDownload').removeAttribute('disabled');
+  else
+    processFile(files[processingFileIndex], function(success){
+      filesElements[processingFileIndex].className = success ? "completed" : "error";
+      processingFileIndex++;
+      setTimeout(processNext, 500);
+    })
 }
 
 function processFile(file, next) {
@@ -32,12 +35,15 @@ function processFile(file, next) {
     //return;
     console.log("Processing " + file.name);
     var language = document.getElementById('SubLanguageID').value;
-    subber.search({file:file, sublanguageid:"eng"}, function(results){
+    subber.search({file:file, sublanguageid:language}, function(results){
+      if(results.length < 1){
+        next(false);
+        return;
+      }
       console.log("sub found: "+ results[0].SubDownloadLink)
       subber.readSub(results[0].SubDownloadLink, function(text){
-        console.log("ended sub reading\n"+text);
         addToZip(file.name.replace(/\.[^/.]+$/, "") + '.srt', text);
-        next();
+        next(true);
       });
     });
 }

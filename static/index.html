@@ -59,6 +59,13 @@
           content: 'Done!';
           float:right;
         }
+        #files-display li.error{
+          border-color:red;
+        }
+        #files-display li.error:before{
+          content: 'Subtitle Not Found!';
+          float:right;
+        }
         </style>
     </head>
     <body>
@@ -116,5 +123,6 @@ function browse(){
         <!-- <script type="text/javascript" src="js/hash.js"></script> -->
         <script type="text/javascript" src="js/opensubtitles.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
+        
     </body>
 </html>
