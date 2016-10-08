@@ -41,15 +41,15 @@ function processFile(file, next) {
         return;
       }
       console.log("sub found: "+ results[0].SubDownloadLink)
-      subber.readSub(results[0].SubDownloadLink, function(text){
-        addToZip(file.name.replace(/\.[^/.]+$/, "") + '.srt', text);
+      subber.readSub(results[0].SubDownloadLink, function(subfiledata){
+        addToZip(file.name.replace(/\.[^/.]+$/, "") + '.srt', subfiledata);
         next(true);
       });
     });
 }
 
-function addToZip(filename, text){
-  zip.file(filename, text);
+function addToZip(filename, subfiledata){
+  zip.file(filename, subfiledata, {binary:true});
 }
 
 function download(){
@@ -57,6 +57,10 @@ function download(){
     .then(function (blob) {
         saveAs(blob, "subtitles.zip");
   });
+}
+
+function browse(){
+  document.getElementById("fileinput").click();
 }
 
 
