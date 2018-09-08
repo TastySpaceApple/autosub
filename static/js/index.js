@@ -1,4 +1,4 @@
-var subber = new OpenSubtitles();
+﻿var subber = new OpenSubtitles();
 var zip = new JSZip();
 zip.file("Downloaded using autosub.txt", "Downloaded from autosub - automatic subtitles searcher");
 var files = [];

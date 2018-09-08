@@ -1,4 +1,4 @@
-var OpenSubtitles = function(userAgent){
+﻿var OpenSubtitles = function(userAgent){
   this.userAgent = userAgent || 'Popcorn Time v1';
   this.xmlrpc_token = null;
 }

@@ -1,4 +1,4 @@
-function hash(file, callback) {
+﻿function hash(file, callback) {
     var HASH_CHUNK_SIZE = 65536, //64 * 1024
         longs = [],
         temp = file.size;
